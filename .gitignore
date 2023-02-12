@@ -377,3 +377,5 @@ poetry.toml
 
 # jihye custom
 .idea/
+.env
+config/settings/test.py
