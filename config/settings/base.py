@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -47,6 +48,11 @@ INSTALLED_APPS = [
 
     # django rest-framework
     'rest_framework',
+
+    # simple jwt
+    'rest_framework_simplejwt',
+    # 필요없는 token이나 해킹된 token을 서버에서 사용할 수 없도록 관리
+    'rest_framework_simplejwt.token_blacklist',
 
     'users',
 ]
@@ -112,8 +118,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'ko-KR'
-# LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'ko-KR'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Asia/Seoul'
 # TIME_ZONE = 'UTC'
@@ -134,3 +140,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # url slash
 APPEND_SLASH = False
+
+# Custom user model
+AUTH_USER_MODEL = "users.User"
+
+# Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+REST_USE_JWT = True
+
+# Simple JWT 설정
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),  # access token이 유효한 기간을 지정하는 datetime.timedelta 객체
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),  # refresh token이 유효한 기간을 지정하는 datetime.timedelta 객체
+    'ROTATE_REFRESH_TOKENS': False,  # True로 설정할 경우, refresh token을 보내면 새로운 access token과 refresh token이 반환
+    'BLACKLIST_AFTER_ROTATION': False,  # True로 설정될 경우, 기존에 있던 refresh token은 blacklist
+    'UPDATE_LAST_LOGIN': False,
+    'TOKEN_USER_CLASS': 'users.User',  # 자신의 User 모델 연결
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "id",  # user_id
+}
