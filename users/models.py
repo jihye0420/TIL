@@ -39,6 +39,7 @@ class UserManager(BaseUserManager):  # 헬퍼 클래스
 
 
 class User(AbstractBaseUser, PermissionsMixin):  # 실제 모델을 상속받아 생성하는 클래스
+    user_id = models.AutoField(primary_key=True)
     email = models.EmailField(max_length=30, unique=True, null=False, blank=False)
     name = models.CharField(max_length=30, null=False, unique=True)
     # firstName = models.CharField(max_length=30, null=False)
