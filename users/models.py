@@ -52,6 +52,9 @@ class User(AbstractBaseUser, PermissionsMixin):  # 실제 모델을 상속받아
     updated_at = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(auto_now=True)
 
+    # def __str__(self):
+    #     return self.user_id
+
     # 헬퍼 클래스 사용
     objects = UserManager()
 

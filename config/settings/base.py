@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 
     'users',
     'routine',
+    'todo',
 ]
 
 MIDDLEWARE = [
