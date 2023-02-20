@@ -10,6 +10,8 @@ from .models import User
 # from .response import response
 
 
+# todo: 정규표현식으로 회원가입시, 이메일 정규식 등을 적용해보기
+# todo: 다른 방법으로 로그인 구현해보기
 # Create your views here.
 @api_view(['GET'])
 def hello_api(request):
@@ -61,7 +63,7 @@ class JWTLoginView(APIView):
 
             res = {
                 "data": {
-                    'id': user.id,
+                    'user_id': user.user_id,
                     "type": 'users' if user.is_superuser == False else 'admin',
                     'attributes': {
                         'token': access,

@@ -55,6 +55,9 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
 
     'users',
+    'routine',
+    'todo',
+    'tutorial',
 ]
 
 MIDDLEWARE = [
@@ -118,11 +121,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-# LANGUAGE_CODE = 'ko-KR'
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ko-KR'
+# LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Seoul'
-# TIME_ZONE = 'UTC'
+# TIME_ZONE = 'Asia/Seoul'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -146,9 +149,14 @@ AUTH_USER_MODEL = "users.User"
 
 # Rest Framework
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+        # 'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
+    ],
 }
 
 REST_USE_JWT = True
@@ -163,6 +171,6 @@ SIMPLE_JWT = {
     'TOKEN_USER_CLASS': 'users.User',  # 자신의 User 모델 연결
     "AUTH_HEADER_TYPES": ("Bearer",),
     "AUTH_HEADER_NAME": "HTTP_AUTHORIZATION",
-    "USER_ID_FIELD": "id",
-    "USER_ID_CLAIM": "id",  # user_id
+    "USER_ID_FIELD": "user_id",
+    "USER_ID_CLAIM": "user_id",  # user_id
 }

@@ -19,6 +19,11 @@ urlpatterns = [
     # 로그인/회원가입
     path('login', views.JWTLoginView.as_view()),
     path('signup', views.JWTSignupView.as_view()),
+    # todo: 로그아웃
+
+    # without 라이브러리
+    # path('')
+
     # 토큰
     path('token/verify', TokenVerifyView.as_view(), name='token_verify'),
     path('token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
