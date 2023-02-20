@@ -14,13 +14,13 @@ class TodoView(APIView):
     serializer_class = TodoSerializer
 
     def post(self, request):
-        # category = request.data['category']
         # get_user_id_1 = User.objects.get(email=request.user)
         # print(get_user_id_1)
         # get_user_id = get_object_or_404(User, email=request.user)
         # print(get_user_id)
         # print(type(get_user_id))
         # print(type(request.user))
+        # * 방법 1 : serializer로 구현하지 않은 방법
         # # user_todo = Todo.objects.create(user_id=get_user_id, point=1)
         # user_todo = Todo(
         #     user_id=request.user,
@@ -32,6 +32,7 @@ class TodoView(APIView):
         # user_todo.save()
         # return Response({"message": "투두가 생성되었습니다."}, status=status.HTTP_200_OK)
 
+        # * 방법 2 : serializer로 구현한 방법
         print(request.user.user_id)
         print(request.data)
         request.data['user_id'] = request.user.user_id
