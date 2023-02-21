@@ -9,7 +9,9 @@ class SnippetSerializer(serializers.ModelSerializer):
         model = Snippet
         fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
 
+# Serializer: 파이썬 모델 데이터 -> json으로 변환
 # class SnippetSerializer(serializers.Serializer):
+#     # 모델 데이터의 어떤 속성을 json으로 넣어줄지 선언이 필요!
 #     id = serializers.IntegerField(read_only=True)
 #     title = serializers.CharField(required=False, allow_blank=True, max_length=100)
 #     code = serializers.CharField(style={'base_template': 'textarea.html'})
@@ -19,8 +21,9 @@ class SnippetSerializer(serializers.ModelSerializer):
 # 
 #     def create(self, validated_data):
 #         """
+#         # * 역직렬화 시 필요!!!
 #         Create and return a new `Snippet` instance, given the validated data.
-#         # Snippet 객체를 리턴 => serializer로 json <-> 파이썬 객체로 직렬화, 역직렬화
+#         # Snippet 객체를 리턴 => serializer로 json -> 파이썬 객체로 역직렬화
 #         """
 #         print(validated_data)
 #         # todo: 왜 **이 붙는지 확인하기
@@ -28,6 +31,7 @@ class SnippetSerializer(serializers.ModelSerializer):
 # 
 #     def update(self, instance, validated_data):
 #         """
+#         # * 역직렬화 시 필요!!!
 #         Update and return an existing `Snippet` instance, given the validated data.
 #         # 존재하는 Snippet 객체를 validated_data로 리턴
 #         """
