@@ -54,6 +54,9 @@ INSTALLED_APPS = [
     # 필요없는 token이나 해킹된 token을 서버에서 사용할 수 없도록 관리
     'rest_framework_simplejwt.token_blacklist',
 
+    # debug
+    'debug_toolbar',
+
     'users',
     'routine',
     'todo',
