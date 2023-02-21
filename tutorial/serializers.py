@@ -1,13 +1,16 @@
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from tutorial.models import Snippet
+from tutorial.models import Snippet, Employee
 
 
 # ModelSerializer : 자동으로 결정된 fields
 class SnippetSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.username')
+
     class Meta:
         model = Snippet
-        fields = ['id', 'title', 'code', 'linenos', 'language', 'style']
+        fields = ['id', 'title', 'code', 'linenos', 'language', 'style', 'owner']
 
 # Serializer: 파이썬 모델 데이터 -> json으로 변환
 # class SnippetSerializer(serializers.Serializer):
@@ -42,3 +45,11 @@ class SnippetSerializer(serializers.ModelSerializer):
 #         instance.style = validated_data.get('style', instance.style)
 #         instance.save()
 #         return instance
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+
+    class Meta:
+        model = Employee
+        fields = ['id', 'username', 'snippets']

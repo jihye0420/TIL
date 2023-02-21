@@ -22,4 +22,5 @@ urlpatterns = [
     path('routines/', include('routine.urls')),
     path('todo/', include('todo.urls')),
     path('tutorial/', include('tutorial.urls')),
+    # path('api-auth/', include('rest_framework.urls')),
 ]
