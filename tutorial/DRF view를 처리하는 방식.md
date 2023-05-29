@@ -88,3 +88,27 @@ class ListCreateAPIView(mixins.ListModelMixin,
 ```
 
 ## Viewset & Router : 클래스형 뷰
+- 하나의 클래스가 하나의 URL을 담당하는 방식 → URL마다의 클래스를 만들고 각 클래스에서는 해당 URL로 들어오는 다양한 메소드를 처리
+- queryset, serializer_class 부분이 겹침 → 하나의 클래스로 하나의 모델을 전부 처리해 줄 수 있으면 겹치는 부분이 없어질 것
+- **Viewset = View의 Set ⇒ 뷰의 집합**
+
+```python
+class SnippetViewSet(viewsets.ModelViewSet):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+```
+
+- [viewsets.py](http://viewsets.py) 안의 내용 ⇒ mixin을 기반으로 한 코드
+```python
+class ModelViewSet(mixins.CreateModelMixin,
+                   mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
+    """
+    A viewset that provides default `create()`, `retrieve()`, `update()`,
+    `partial_update()`, `destroy()` and `list()` actions.
+    """
+    pass
+```

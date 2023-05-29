@@ -1,13 +1,16 @@
 from django.http import Http404
 from rest_framework import generics
 from rest_framework import mixins
+from rest_framework import permissions
 from rest_framework import status
+from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from tutorial.models import Snippet
-from tutorial.serializers import SnippetSerializer
+from tutorial.models import Snippet, Employee
+from tutorial.permissions import IsOwnerOrReadOnly
+from tutorial.serializers import SnippetSerializer, EmployeeSerializer
 
 
 # @csrf_exempt
@@ -183,10 +186,33 @@ class SnippetDetailAPIMixins(mixins.RetrieveModelMixin,
 
 # * generics class를 이용한 class-based views
 class SnippetAPI(generics.ListCreateAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(owner=Employee.objects.filter(username=self.request.user.name).first())  # self.request.user
 
 
 class SnippetDetailAPI(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+
     queryset = Snippet.objects.all()
     serializer_class = SnippetSerializer
+
+
+# * viewset class를 이용한 class-based views
+class SnippetViewSet(viewsets.ModelViewSet):
+    queryset = Snippet.objects.all()
+    serializer_class = SnippetSerializer
+
+
+class UserList(generics.ListAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
