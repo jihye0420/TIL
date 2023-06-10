@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os.path
+import datetime
+import os
 from pathlib import Path
 
 import environ
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
-env = environ.Env(DEBUG=(bool, True))
+env = environ.Env()
 env.read_env(env_file=os.path.join(BASE_DIR, ".env"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
-# SECRET_KEY = 'django-insecure-y+&=b4bhaprc_d=*lq26o*d51hk8k5c%*lwp*-yk))32)#%r-p'
+# SECRET_KEY = 'django-insecure-zo%=1(t(5^=d2$zizitd@f43qste-+xht$&)y=f*7j(7v#*w(t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -44,23 +45,29 @@ INSTALLED_APPS = [
 
     # my app
     'social',
-    # rest_framework
+    # django-rest-framework
     'rest_framework',
     # simple-jwt
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
-    # django-allauth
+    # dj-rest-auth (drf social 로그인 제공)
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    # django-allauth (social 로그인 제공)
     'django.contrib.sites',
 
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
 
-    'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.kakao',
-    'allauth.socialaccount.providers.naver',
     'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.naver',
+    'allauth.socialaccount.providers.google',
+
+    'rest_framework.authtoken'
 ]
 
 MIDDLEWARE = [
@@ -86,9 +93,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
-                # `allauth` needs this from django
-                'django.template.context_processors.request',
             ],
         },
     },
@@ -157,42 +161,35 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # django-allauth 관련 설정
-AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
-
-    # `allauth` specific authentication methods, such as login by e-mail
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
-
 SITE_ID = 2
+AUTH_USER_MODEL = 'social.User'
 
-# Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        },
+REST_USE_JWT = True
 
-        # # For each OAuth based provider, either add a ``SocialApp``
-        # # (``socialaccount`` app) containing the required client
-        # # credentials, or list them here:
-        # 'APP': {
-        #     'client_id': '123',
-        #     'secret': '456',
-        #     'key': ''
-        # }
-    }
+# 아래 설정
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # username 필드 사용 x
+ACCOUNT_EMAIL_REQUIRED = True  # email 필드 사용 o
+ACCOUNT_USERNAME_REQUIRED = False  # username 필드 사용 x
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
 }
 
-LOGIN_REDIRECT_URL = '/'
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': datetime.timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': datetime.timedelta(days=1),
+}
 
-# # Additional configuration settings
-# SOCIALACCOUNT_QUERY_EMAIL = True
-# ACCOUNT_LOGOUT_ON_GET= True
-# ACCOUNT_UNIQUE_EMAIL = True
-# ACCOUNT_EMAIL_REQUIRED = True
+TOKEN_MODEL = None
+
+SOCIAL_AUTH_GOOGLE_CLIENT_ID = env('SOCIAL_AUTH_GOOGLE_CLIENT_ID')
+SOCIAL_AUTH_GOOGLE_SECRET = env('SOCIAL_AUTH_GOOGLE_SECRET')
+STATE = env('STATE')
